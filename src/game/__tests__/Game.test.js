@@ -103,19 +103,15 @@ describe('Player', () => {
   });
 
   test('should collide with platforms', () => {
-    player.y = 150; 
+    player.x = 10;
+    player.y = 150;
     player.velocityY = 5; // Apply downward velocity
     const inputState = { run: false, jump: false, grab: false, timeJump: false };
-    // Use a platform that the player can actually land on
     const testPlatforms = [{ x: 0, y: 200, width: 100, height: 20 }];
-    
-    // Apply gravity to make player fall
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       player.update(inputState, testPlatforms);
     }
-    
-    // Player should be on the platform
-    expect(player.y).toBeLessThanOrEqual(20 - player.height);
+    expect(player.y).toBeCloseTo(200 - player.height, 1);
   });
 });
 
