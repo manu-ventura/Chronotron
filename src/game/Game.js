@@ -53,11 +53,11 @@ export class Game {
     if (!this.isRecording && this.echoes.length === 0) {
       this.startRecording();
     }
-    this.player.update(inputState, this.level.getPlatforms());
+    this.player.update(inputState, this.level.getPlatforms(), deltaTime);
     if (this.level.handleInteraction) {
       this.level.handleInteraction(this.player);
     }
-    this.updateEchoes();
+    this.updateEchoes(deltaTime);
     this.checkParadox();
     this.checkWinCondition();
   }
@@ -88,10 +88,10 @@ export class Game {
     console.log('Time-Jump performed! Echoes:', this.echoes.length);
   }
 
-  updateEchoes() {
+  updateEchoes(deltaTime) {
     for (let i = this.echoes.length - 1; i >= 0; i--) {
       const echo = this.echoes[i];
-      echo.update(this.level.getPlatforms());
+      echo.update(this.level.getPlatforms(), deltaTime);
       if (echo.isFinished()) {
         this.echoes.splice(i, 1);
       }

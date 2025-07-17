@@ -1,4 +1,5 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from './constants.js';
+import { checkCollision, updatePhysics } from './physics.js';
 
 export class Player {
   constructor(x, y) {
@@ -20,104 +21,13 @@ export class Player {
     this.alpha = 1;
   }
 
-  update(inputState, platforms) {
-    // Handle horizontal movement
-    if (inputState.run) {
-      this.velocityX = inputState.run ? this.speed : 0;
-    } else {
-      this.velocityX = 0;
-    }
-
-    // Handle jumping
-    if (inputState.jump && this.isOnGround) {
-      this.velocityY = this.jumpPower;
-      this.isOnGround = false;
-    }
-
-    // Handle grabbing
-    if (inputState.grab) {
-      this.isGrabbing = true;
-    } else {
-      this.isGrabbing = false;
-      this.grabbedObject = null;
-    }
-
-    // Apply gravity
-    this.velocityY += this.gravity;
-
-    // Update position
-    this.x += this.velocityX;
-    this.y += this.velocityY;
-
-    // Check collision with platforms
-    this.checkPlatformCollisions(platforms);
-
-    // Keep player in bounds
-    this.keepInBounds();
-  }
-
-  checkPlatformCollisions(platforms) {
-    this.isOnGround = false;
-
-    for (const platform of platforms) {
-      if (this.checkCollision(platform)) {
-        // Determine collision side
-        const overlapX = Math.min(
-          this.x + this.width - platform.x,
-          platform.x + platform.width - this.x
-        );
-        const overlapY = Math.min(
-          this.y + this.height - platform.y,
-          platform.y + platform.height - this.y
-        );
-
-        if (overlapX < overlapY) {
-          // Horizontal collision
-          if (this.x < platform.x) {
-            this.x = platform.x - this.width;
-          } else {
-            this.x = platform.x + platform.width;
-          }
-          this.velocityX = 0;
-        } else {
-          // Vertical collision
-          if (this.y < platform.y) {
-            this.y = platform.y - this.height;
-            this.velocityY = 0;
-          } else {
-            this.y = platform.y + platform.height;
-            this.velocityY = 0;
-            this.isOnGround = true;
-          }
-        }
-      }
-    }
+  update(inputState, platforms, deltaTime = 1) {
+    // Use shared physics update with delta time
+    updatePhysics(this, inputState, platforms, deltaTime);
   }
 
   checkCollision(other) {
-    return (
-      this.x < other.x + other.width &&
-      this.x + this.width > other.x &&
-      this.y < other.y + other.height &&
-      this.y + this.height > other.y
-    );
-  }
-
-  keepInBounds() {
-    // Keep player within canvas bounds
-    if (this.x < 0) {
-      this.x = 0;
-      this.velocityX = 0;
-    }
-    if (this.x + this.width > CANVAS_WIDTH) {
-      this.x = CANVAS_WIDTH - this.width;
-      this.velocityX = 0;
-    }
-    if (this.y + this.height > CANVAS_HEIGHT) {
-      this.y = CANVAS_HEIGHT - this.height;
-      this.velocityY = 0;
-      this.isOnGround = true;
-    }
+    return checkCollision(this, other);
   }
 
   render(p5) {

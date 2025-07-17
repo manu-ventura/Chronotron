@@ -1,4 +1,5 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from './constants.js';
+import { checkCollision, updatePhysics } from './physics.js';
 
 export class Echo {
   constructor(actions, startFrame, age = 0) {
@@ -35,7 +36,7 @@ export class Echo {
     this.keyStates = {};
   }
 
-  update(platforms) {
+  update(platforms, deltaTime = 1) {
     // Get actions for current frame
     const frameActions = this.getActionsForFrame(this.currentFrame);
     // Update key states
@@ -48,8 +49,8 @@ export class Echo {
     }
     // Apply key states to inputs
     this.applyKeyStates();
-    // Update physics (same as player)
-    this.updatePhysics(platforms);
+    // Use shared physics update with delta time
+    updatePhysics(this, this.currentInput, platforms, deltaTime);
     this.currentFrame++;
   }
 
@@ -75,98 +76,8 @@ export class Echo {
     }
   }
 
-  updatePhysics(platforms) {
-    // Handle horizontal movement
-    if (this.currentInput.run) {
-      this.velocityX = this.speed;
-    } else {
-      this.velocityX = 0;
-    }
-
-    // Handle jumping
-    if (this.currentInput.jump && this.isOnGround) {
-      this.velocityY = this.jumpPower;
-      this.isOnGround = false;
-    }
-
-    // Handle grabbing
-    this.isGrabbing = this.currentInput.grab;
-
-    // Apply gravity
-    this.velocityY += this.gravity;
-
-    // Update position
-    this.x += this.velocityX;
-    this.y += this.velocityY;
-
-    // Check collision with platforms
-    this.checkPlatformCollisions(platforms);
-
-    // Keep Echo in bounds
-    this.keepInBounds();
-  }
-
-  checkPlatformCollisions(platforms) {
-    this.isOnGround = false;
-
-    for (const platform of platforms) {
-      if (this.checkCollision(platform)) {
-        // Determine collision side
-        const overlapX = Math.min(
-          this.x + this.width - platform.x,
-          platform.x + platform.width - this.x
-        );
-        const overlapY = Math.min(
-          this.y + this.height - platform.y,
-          platform.y + platform.height - this.y
-        );
-
-        if (overlapX < overlapY) {
-          // Horizontal collision
-          if (this.x < platform.x) {
-            this.x = platform.x - this.width;
-          } else {
-            this.x = platform.x + platform.width;
-          }
-          this.velocityX = 0;
-        } else {
-          // Vertical collision
-          if (this.y < platform.y) {
-            this.y = platform.y - this.height;
-          } else {
-            this.y = platform.y + platform.height;
-          }
-          this.velocityY = 0;
-          this.isOnGround = true;
-        }
-      }
-    }
-  }
-
   checkCollision(other) {
-    return (
-      this.x < other.x + other.width &&
-      this.x + this.width > other.x &&
-      this.y < other.y + other.height &&
-      this.y + this.height > other.y
-    );
-  }
-
-  keepInBounds() {
-    // Keep Echo within canvas bounds
-    if (this.x <0) {
-      this.x = 0;
-      this.velocityX =0;
-    }
-    if (this.x + this.width > CANVAS_WIDTH) {
-      this.x = CANVAS_WIDTH - this.width;
-      this.velocityX =0;
-    }
-    if (this.y + this.height > CANVAS_HEIGHT) {
-      this.y = CANVAS_HEIGHT - this.height;
-      this.velocityY = 0;
-      this.isOnGround = true;
-    }
+    return checkCollision(this, other);
   }
 
   render(p5) {
