@@ -131,7 +131,6 @@ describe('Echo', () => {
 
   test('should replay actions correctly', () => {
     echo.update(platforms);
-    
     // Should have applied the run action
     expect(echo.currentInput.run).toBe(true);
   });
@@ -146,8 +145,28 @@ describe('Echo', () => {
     for (let i = 0; i < 10; i++) {
       echo.update(platforms);
     }
-    
     expect(echo.isFinished()).toBe(true);
+  });
+
+  test('should accurately replay a recorded run and jump sequence', () => {
+    // Simulate a run and jump sequence with keyup events
+    const recordedActions = [
+      { frame: 0, type: 'keydown', key: 'KeyD' }, // run down
+      { frame: 1, type: 'keydown', key: 'Space' }, // jump down
+      { frame: 2, type: 'keyup', key: 'KeyD' },   // run up
+      { frame: 2, type: 'keyup', key: 'Space' }   // jump up
+    ];
+    const testEcho = new Echo(recordedActions, 0, 0);
+    // Frame 0: should run
+    testEcho.update(platforms);
+    expect(testEcho.currentInput.run).toBe(true);
+    // Frame 1: should jump
+    testEcho.update(platforms);
+    expect(testEcho.currentInput.jump).toBe(true);
+    // Frame 2: keys released
+    testEcho.update(platforms);
+    expect(testEcho.currentInput.run).toBe(false);
+    expect(testEcho.currentInput.jump).toBe(false);
   });
 });
 

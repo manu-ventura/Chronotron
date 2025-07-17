@@ -30,18 +30,24 @@ export class Echo {
       grab: false,
       timeJump: false
     };
+    this.keyStates = {};
   }
 
   update(platforms) {
     // Get actions for current frame
     const frameActions = this.getActionsForFrame(this.currentFrame);
-    
-    // Apply actions with potential inaccuracies
-    this.applyActions(frameActions);
-    
+    // Update key states
+    for (const action of frameActions) {
+      if (action.type === 'keydown') {
+        this.keyStates[action.key] = true;
+      } else if (action.type === 'keyup') {
+        this.keyStates[action.key] = false;
+      }
+    }
+    // Apply key states to inputs
+    this.applyKeyStates();
     // Update physics (same as player)
     this.updatePhysics(platforms);
-    
     this.currentFrame++;
   }
 
@@ -49,45 +55,19 @@ export class Echo {
     return this.actions.filter(action => action.frame === frame);
   }
 
-  applyActions(actions) {
-    // Reset input state
+  applyKeyStates() {
     this.currentInput = {
-      run: false,
-      jump: false,
-      grab: false,
-      timeJump: false
+      run: !!(this.keyStates['KeyD'] || this.keyStates['ArrowRight']),
+      jump: !!(this.keyStates['Space'] || this.keyStates['KeyW'] || this.keyStates['ArrowUp']),
+      grab: !!(this.keyStates['KeyE'] || this.keyStates['KeyF']),
+      timeJump: !!this.keyStates['KeyR']
     };
-
-    // Apply recorded actions
-    for (const action of actions) {
-      if (action.type === 'keydown') {
-        switch (action.key) {
-          case 'KeyD':
-          case 'ArrowRight':
-            this.currentInput.run = true;
-            break;
-          case ' ':
-          case 'KeyW':
-          case 'ArrowUp':
-            this.currentInput.jump = true;
-            break;
-          case 'KeyE':
-          case 'KeyF':
-            this.currentInput.grab = true;
-            break;
-          case 'KeyR':
-            this.currentInput.timeJump = true;
-            break;
-        }
-      }
-    }
-
     // Apply input inaccuracies for older Echoes
     if (this.inputInaccuracy > 0) {
-      if (Math.random() < 0.1) { // 10% chance of input error per frame
+      if (Math.random() < 0.1) {
         this.currentInput.run = !this.currentInput.run;
       }
-      if (Math.random() < 0.5) { // 50% chance of jump error
+      if (Math.random() < 0.5) {
         this.currentInput.jump = !this.currentInput.jump;
       }
     }
