@@ -182,3 +182,23 @@ describe('Level', () => {
     expect(resetDoor.isOpen).toBe(initialState);
   });
 });
+
+describe('Game', () => {
+  test('should trigger paradox when player and echo overlap', () => {
+    const { Game } = require('../Game.js');
+    const { Level } = require('../Level.js');
+    const { Player } = require('../Player.js');
+    const { Echo } = require('../Echo.js');
+    const game = new Game();
+    game.player.x = 100;
+    game.player.y = 100;
+    const echo = new Echo([], 0, 0, 3);
+    echo.x = 100;
+    echo.y = 100;
+    game.echoes = [echo];
+    let paradoxTriggered = false;
+    game.triggerParadoxCascade = () => { paradoxTriggered = true; };
+    game.checkParadox();
+    expect(paradoxTriggered).toBe(true);
+  });
+});

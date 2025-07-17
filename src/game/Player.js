@@ -12,6 +12,10 @@ export class Player {
     this.isOnGround = false;
     this.isGrabbing = false;
     this.grabbedObject = null;
+    this.isShieldActive = false;
+    this.shieldTimer = 0;
+    this.isPingActive = false;
+    this.pingTimer = 0;
     
     // Visual properties
     this.color = '#00ff00'; // Bright green for player
@@ -38,6 +42,26 @@ export class Player {
     } else {
       this.isGrabbing = false;
       this.grabbedObject = null;
+    }
+
+    // Handle Temporal Shield (activate with Q, lasts 3 seconds)
+    if (inputState.shield && !this.isShieldActive) {
+      this.isShieldActive = true;
+      this.shieldTimer = 180; // 3 seconds at 60 FPS
+    }
+    if (this.isShieldActive) {
+      this.shieldTimer--;
+      if (this.shieldTimer <= 0) this.isShieldActive = false;
+    }
+
+    // Handle Causal Ping (activate with F, lasts 1 second)
+    if (inputState.ping && !this.isPingActive) {
+      this.isPingActive = true;
+      this.pingTimer = 60;
+    }
+    if (this.isPingActive) {
+      this.pingTimer--;
+      if (this.pingTimer <= 0) this.isPingActive = false;
     }
 
     // Apply gravity
@@ -130,6 +154,24 @@ export class Player {
     p5.ellipse(this.x + 8, this.y + 8, 4, 4);
     p5.ellipse(this.x + 24, this.y + 8, 4, 4);
     p5.rect(this.x + 12, this.y + 20, 8, 2);
+    // Temporal Shield visual
+    if (this.isShieldActive) {
+      p5.push();
+      p5.noFill();
+      p5.stroke(0, 200, 255);
+      p5.strokeWeight(4);
+      p5.rect(this.x - 4, this.y - 4, this.width + 8, this.height + 8);
+      p5.pop();
+    }
+    // Causal Ping visual
+    if (this.isPingActive) {
+      p5.push();
+      p5.noFill();
+      p5.stroke(255, 215, 0);
+      p5.strokeWeight(3);
+      p5.ellipse(this.x + this.width / 2, this.y + this.height / 2, 64, 64);
+      p5.pop();
+    }
     p5.pop();
   }
 

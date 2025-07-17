@@ -1,38 +1,33 @@
-import { GameLoop } from./GameLoop.js';
-import { InputSystem } from./InputSystem.js;
-import { Player } from './Player.js;
+import { GameLoop } from './GameLoop.js';
+import { InputSystem } from './InputSystem.js';
+import { Player } from './Player.js';
 import { Echo } from './Echo.js';
 import { Level } from './Level.js';
 
-export class Game[object Object]  constructor() {
+export class Game {
+  constructor() {
     this.gameLoop = new GameLoop();
     this.inputSystem = new InputSystem();
     this.level = new Level();
-    this.player = new Player(100);
-    
-    this.echoes =    this.echoLimit = 3 Configurable echo limit
+    this.player = new Player(100, 100);
+    this.echoes = [];
+    this.echoLimit = this.level.getEchoLimit();
     this.isRecording = false;
     this.recordedActions = [];
-    
-    // Game state
-    this.gameState = 'playing; // playing, paused', 'gameOver   this.currentTimeline = 0;
-    
-    // Audio (placeholder for Howler.js integration)
-    this.sounds =[object Object]    timeJump: null,
+    this.gameState = 'playing'; // playing, paused, gameOver
+    this.currentTimeline = 0;
+    this.sounds = {
+      timeJump: null,
       puzzleSolved: null,
       ambient: null
     };
-    
     this.setupGameLoop();
   }
 
   setupGameLoop() {
-    // Add update callback
     this.gameLoop.addUpdateCallback((deltaTime, frameCount) => {
       this.update(deltaTime, frameCount);
     });
-
-    // Add render callback
     this.gameLoop.addRenderCallback(() => {
       this.render();
     });
@@ -47,38 +42,28 @@ export class Game[object Object]  constructor() {
   }
 
   update(deltaTime, frameCount) {
-    if (this.gameState !==playing) return;
-
-    // Update input system
+    if (this.gameState !== 'playing') return;
     this.inputSystem.update(frameCount);
-
-    // Get current input state
     const inputState = this.inputSystem.getCurrentInputState();
-
-    // Handle Time-Jump
     if (inputState.timeJump && this.canTimeJump()) {
       this.performTimeJump();
       return;
     }
-
-    // Start/stop recording based on game state
     if (!this.isRecording && this.echoes.length === 0) {
       this.startRecording();
     }
-
-    // Update player
     this.player.update(inputState, this.level.getPlatforms());
-
-    // Handle level interactions
     this.level.handleInteraction(this.player);
-
-    // Update echoes
+    const conveyor = this.level.getTemporalConveyors().find(c => this.player.checkCollision(c));
+    if (conveyor && this.player.isGrabbing && this.player.grabbedObject) {
+      conveyor.onActivate(this.player.grabbedObject);
+      this.player.grabbedObject = null;
+    }
+    if (this.level.causalHotspot && this.checkHotspot(this.player, this.level.causalHotspot)) {
+      this.triggerCausalHotspot();
+    }
     this.updateEchoes();
-
-    // Check for paradox
     this.checkParadox();
-
-    // Check win condition
     this.checkWinCondition();
   }
 
@@ -92,37 +77,26 @@ export class Game[object Object]  constructor() {
     this.recordedActions = this.inputSystem.stopRecording();
   }
 
-  canTimeJump()[object Object]
-    return this.echoes.length < this.echoLimit && this.recordedActions.length >0  }
+  canTimeJump() {
+    return this.echoes.length < this.echoLimit && this.recordedActions.length > 0;
+  }
 
   performTimeJump() {
-    // Stop current recording
     this.stopRecording();
-
-    // Create new Echo
-    const echoAge = this.echoes.length; // Older echoes have higher age
-    const newEcho = new Echo([...this.recordedActions], this.gameLoop.getFrameCount(), echoAge);
+    const echoAge = this.echoes.length;
+    const newEcho = new Echo([...this.recordedActions], this.gameLoop.getFrameCount(), echoAge, this.echoLimit);
     this.echoes.push(newEcho);
-
-    // Reset level
     this.level.reset();
-
-    // Reset player to starting position
-    this.player = new Player(1000
-
-    // Start new recording
+    this.player = new Player(100, 100);
     this.startRecording();
-
-    // Play time jump sound
     this.playSound('timeJump');
-
     console.log('Time-Jump performed! Echoes:', this.echoes.length);
   }
 
-  updateEchoes() [object Object] for (let i = this.echoes.length - 1>= 0; i--) [object Object]      const echo = this.echoes[i];
+  updateEchoes() {
+    for (let i = this.echoes.length - 1; i >= 0; i--) {
+      const echo = this.echoes[i];
       echo.update(this.level.getPlatforms());
-
-      // Remove finished echoes
       if (echo.isFinished()) {
         this.echoes.splice(i, 1);
       }
@@ -130,21 +104,17 @@ export class Game[object Object]  constructor() {
   }
 
   checkParadox() {
-    // Check for interference with Echo actions
     for (const echo of this.echoes) {
-      // Check if player is blocking echo movement
       if (this.player.checkCollision(echo)) {
         this.triggerParadoxCascade();
         return;
       }
-
-      // Check if echo is interfering with player movement
       const playerCollision = this.level.checkPlayerCollisions(this.player);
-      if (playerCollision && playerCollision.type === 'platform') [object Object]       // Check if echo is on the same platform
+      if (playerCollision && playerCollision.type === 'platform') {
         for (const platform of this.level.getPlatforms()) {
           if (echo.checkCollision(platform) && this.player.checkCollision(platform)) {
-            // Potential paradox - echo and player on same platform
-            if (Math.abs(echo.x - this.player.x) < 50              this.triggerParadoxCascade();
+            if (Math.abs(echo.x - this.player.x) < 50) {
+              this.triggerParadoxCascade();
               return;
             }
           }
@@ -153,70 +123,79 @@ export class Game[object Object]  constructor() {
     }
   }
 
-  triggerParadoxCascade()[object Object]
+  triggerParadoxCascade() {
     console.log('PARADOX CASCADE TRIGGERED!');
-    
-    // Reset everything
-    this.echoes =   this.level.reset();
-    this.player = new Player(100);
-    this.recordedActions = his.startRecording();
-
-    // Visual glitch effect (placeholder)
-    document.body.style.filter = hue-rotate(180deg)';
+    this.echoes = [];
+    this.level.reset();
+    this.player = new Player(100, 100);
+    this.recordedActions = [];
+    this.startRecording();
+    document.body.style.filter = 'hue-rotate(180deg)';
     setTimeout(() => {
-      document.body.style.filter = none';
+      document.body.style.filter = 'none';
     }, 500);
   }
 
-  checkWinCondition()[object Object]// Check if player reached the door and it's open
+  checkWinCondition() {
     const door = this.level.getDoor();
-    if (door.isOpen && this.player.checkCollision(door))[object Object]    this.gameState =gameOver;    this.playSound('puzzleSolved');
+    if (door.isOpen && this.player.checkCollision(door)) {
+      this.gameState = 'gameOver';
+      this.playSound('puzzleSolved');
       console.log('Puzzle solved!');
     }
   }
 
   playSound(soundName) {
-    // Placeholder for Howler.js integration
     console.log('Playing sound:', soundName);
   }
 
   render() {
-    // Clear canvas
-    background(240   // Render level
+    window.background(240);
     this.level.render(window);
-
-    // Render echoes
     for (const echo of this.echoes) {
       echo.render(window);
     }
-
-    // Render player
     this.player.render(window);
-
-    // Render UI
     this.renderUI();
   }
 
   renderUI() {
-    // Render echo count
-    push();
-    fill(0);
-    noStroke();
-    textSize(16;
-    text(`Echoes: ${this.echoes.length}/$[object Object]this.echoLimit}`,1030    text(`Timeline: ${this.currentTimeline}`,10, 50
-    
+    window.push();
+    window.fill(0);
+    window.noStroke();
+    window.textSize(16);
+    window.text(`Echoes: ${this.echoes.length}/${this.echoLimit}`, 10, 30);
+    window.text(`Timeline: ${this.currentTimeline}`, 10, 50);
     if (this.isRecording) {
-      text(Recording..., 10, 70
+      window.text('Recording...', 10, 70);
     }
-    
-    // Instructions
-    textSize(12);
-    text(WASD/Arrows: Move, Space: Jump, E: Grab, R: Time-Jump',10 580;
-    pop();
+    window.textSize(12);
+    window.text('WASD/Arrows: Move, Space: Jump, E: Grab, R: Time-Jump, Q: Shield, F: Ping', 10, 580);
+    window.pop();
   }
 
   destroy() {
     this.gameLoop.stop();
     this.inputSystem.destroy();
+  }
+
+  checkHotspot(entity, hotspot) {
+    return (
+      entity.x < hotspot.x + hotspot.width &&
+      entity.x + entity.width > hotspot.x &&
+      entity.y < hotspot.y + hotspot.height &&
+      entity.y + entity.height > hotspot.y
+    );
+  }
+
+  triggerCausalHotspot() {
+    this.level.door.isOpen = true;
+    this.echoes.forEach(echo => {
+      // Could trigger echo-specific effects here
+    });
+    document.body.style.background = '#ffe680';
+    setTimeout(() => {
+      document.body.style.background = '';
+    }, 200);
   }
 }

@@ -5,6 +5,7 @@ export class Level {
     this.temporalConveyors = [];
     this.initialState = null;
     this.currentState = null;
+    this.echoLimit = 3;
     
     this.loadTestLevel();
   }
@@ -62,6 +63,9 @@ export class Level {
       color: '#8b4513'
     };
 
+    // Causal Hotspot area (example: center of the map)
+    this.causalHotspot = { x: 350, y: 300, width: 100, height: 100 };
+    this.echoLimit = 3; // Can be changed per level
     this.saveInitialState();
   }
 
@@ -205,6 +209,15 @@ export class Level {
 
     // Render grid background for test chamber aesthetic
     this.renderGrid(p5);
+
+    // Render causal hotspot
+    if (this.causalHotspot) {
+      p5.push();
+      p5.noStroke();
+      p5.fill(255, 230, 128, 100);
+      p5.rect(this.causalHotspot.x, this.causalHotspot.y, this.causalHotspot.width, this.causalHotspot.height);
+      p5.pop();
+    }
   }
 
   renderGrid(p5) {
@@ -238,5 +251,13 @@ export class Level {
 
   getDoor() {
     return this.door;
+  }
+
+  getEchoLimit() {
+    return this.echoLimit;
+  }
+
+  getCausalHotspot() {
+    return this.causalHotspot;
   }
 }

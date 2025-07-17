@@ -74,6 +74,14 @@ export class InputSystem {
     return this.isKeyPressed('KeyR');
   }
 
+  isShieldPressed() {
+    return this.isKeyPressed('KeyQ');
+  }
+
+  isPingPressed() {
+    return this.isKeyPressed('KeyF');
+  }
+
   // Get current input state for this frame
   getCurrentInputState() {
     return {
@@ -81,7 +89,9 @@ export class InputSystem {
       run: this.isRunPressed(),
       jump: this.isJumpPressed(),
       grab: this.isGrabPressed(),
-      timeJump: this.isTimeJumpPressed()
+      timeJump: this.isTimeJumpPressed(),
+      shield: this.isShieldPressed(),
+      ping: this.isPingPressed()
     };
   }
 

@@ -1,5 +1,5 @@
 export class Echo {
-  constructor(actions, startFrame, age = 0) {
+  constructor(actions, startFrame, age = 0, echoLimit = 3) {
     this.actions = actions;
     this.startFrame = startFrame;
     this.age = age; // How old this Echo is (affects visual and input accuracy)
@@ -7,8 +7,10 @@ export class Echo {
     
     // Visual properties with temporal decay
     this.color = '#00ff00'; // Green base color
-    this.alpha = Math.max(0.2, 0.2 - (this.age / 100)); // Transparency based on age
-    this.inputInaccuracy = Math.min(2, this.age); // ±1-2 pixel inaccuracies for older Echoes
+    // Alpha fades with age, minimum 0.2, max 1.0
+    this.alpha = Math.max(0.2, 1 - 0.8 * (this.age / (echoLimit - 1 || 1)));
+    // Input inaccuracy increases with age, up to 2 pixels
+    this.inputInaccuracy = Math.round(2 * (this.age / (echoLimit - 1 || 1)));
     
     // Physics properties (same as player)
     this.x = 100; // Starting position
