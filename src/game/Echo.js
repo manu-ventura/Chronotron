@@ -16,7 +16,7 @@ export class Echo {
     this.width = 32;
     this.height = 32;
     this.velocityX = 0;
-    this.velocityY =0;
+    this.velocityY = 0;
     this.speed = 4;
     this.jumpPower = -12;
     this.gravity = 0.6;
@@ -126,7 +126,7 @@ export class Echo {
           } else {
             this.x = platform.x + platform.width;
           }
-          this.velocityX =0;
+          this.velocityX = 0;
         } else {
           // Vertical collision
           if (this.y < platform.y) {

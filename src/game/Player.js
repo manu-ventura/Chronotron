@@ -8,7 +8,7 @@ export class Player {
     this.velocityY =0;
     this.speed = 4;
     this.jumpPower = -12;
-    this.gravity = 0.6
+    this.gravity = 0.6;
     this.isOnGround = false;
     this.isGrabbing = false;
     this.grabbedObject = null;
@@ -76,7 +76,7 @@ export class Player {
           } else {
             this.x = platform.x + platform.width;
           }
-          this.velocityX =0
+          this.velocityX = 0;
         } else {
           // Vertical collision
           if (this.y < platform.y) {
