@@ -1,6 +1,7 @@
 export class Level {
   constructor() {
-    this.platforms =   this.interactiveObjects = [];
+    this.platforms = [];
+    this.interactiveObjects = [];
     this.temporalConveyors = [];
     this.initialState = null;
     this.currentState = null;
@@ -10,18 +11,18 @@ export class Level {
 
   loadTestLevel() {
     // Create a simple test level with platforms and interactive objects
-    this.platforms =    // Ground
+    this.platforms = [
+      // Ground
       { x: 0, y: 550, width: 800, height: 50, type: 'ground' },
-      
       // Platforms
       { x: 100, y: 450, width: 100, height: 20, type: 'platform' },
       { x: 300, y: 350, width: 100, height: 20, type: 'platform' },
       { x: 500, y: 250, width: 100, height: 20, type: 'platform' },
       { x: 700, y: 150, width: 100, height: 20, type: 'platform' },
-      
       // Wall
-      { x: 750, y: 150, width: 20, height:400, type:'wall' }
-    ];    // Interactive objects
+      { x: 750, y: 150, width: 20, height: 400, type: 'wall' }
+    ];
+    // Interactive objects
     this.interactiveObjects =
       [
         { x: 750,

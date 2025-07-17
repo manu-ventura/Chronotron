@@ -14,8 +14,9 @@ export class Player {
     this.grabbedObject = null;
     
     // Visual properties
-    this.color = '#0; // Bright green for player
-    this.alpha = 1 }
+    this.color = '#00ff00'; // Bright green for player
+    this.alpha = 1;
+  }
 
   update(inputState, platforms) {
     // Handle horizontal movement
@@ -102,15 +103,18 @@ export class Player {
 
   keepInBounds() {
     // Keep player within canvas bounds
-    if (this.x <0) {
+    if (this.x < 0) {
       this.x = 0;
-      this.velocityX =0    }
-    if (this.x + this.width > 80) { // Assuming 80canvas width
+      this.velocityX = 0;
+    }
+    if (this.x + this.width > 800) { // Assuming 800 canvas width
       this.x = 800 - this.width;
-      this.velocityX =0    }
-    if (this.y + this.height > 60) { // Assuming 600anvas height
-      this.y =60 - this.height;
-      this.velocityY = 0   this.isOnGround = true;
+      this.velocityX = 0;
+    }
+    if (this.y + this.height > 600) { // Assuming 600 canvas height
+      this.y = 600 - this.height;
+      this.velocityY = 0;
+      this.isOnGround = true;
     }
   }
 
@@ -120,13 +124,12 @@ export class Player {
     p5.stroke(0);
     p5.strokeWeight(2);
     p5.rect(this.x, this.y, this.width, this.height);
-    
     // Draw a simple face to distinguish player
     p5.fill(0);
     p5.noStroke();
-    p5.ellipse(this.x + 8, this.y +844);
-    p5.ellipse(this.x + 24, this.y +84);
-    p5.rect(this.x + 12, this.y +2082);
+    p5.ellipse(this.x + 8, this.y + 8, 4, 4);
+    p5.ellipse(this.x + 24, this.y + 8, 4, 4);
+    p5.rect(this.x + 12, this.y + 20, 8, 2);
     p5.pop();
   }
 
