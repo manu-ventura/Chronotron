@@ -127,9 +127,11 @@ export class Player {
     // Draw a simple face to distinguish player
     p5.fill(0);
     p5.noStroke();
-    p5.ellipse(this.x + 8, this.y + 8, 4, 4);
-    p5.ellipse(this.x + 24, this.y + 8, 4, 4);
-    p5.rect(this.x + 12, this.y + 20, 8, 2);
+    // Eyes
+    p5.ellipse(this.x + 8, this.y + 10, 4, 4);
+    p5.ellipse(this.x + 24, this.y + 10, 4, 4);
+    // Mouth
+    p5.rect(this.x + 12, this.y + 22, 8, 2);
     p5.pop();
   }
 

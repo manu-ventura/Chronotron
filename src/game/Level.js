@@ -158,14 +158,13 @@ export class Level {
     // Render interactive objects
     for (const obj of this.interactiveObjects) {
       p5.push();
-      p5.fill(obj.color);
+      p5.fill(obj.isPressed ? '#00ff00' : obj.color); // Green if pressed
       p5.stroke(0);
       p5.strokeWeight(2);
       p5.rect(obj.x, obj.y, obj.width, obj.height);
-      
       // Draw switch indicator
       if (obj.type === 'switch') {
-        p5.fill(255);
+        p5.fill(obj.isPressed ? '#00ff00' : 255);
         p5.noStroke();
         p5.ellipse(obj.x + 15, obj.y + 15, 10, 10);
       }
@@ -175,11 +174,10 @@ export class Level {
     // Render temporal conveyors
     for (const conveyor of this.temporalConveyors) {
       p5.push();
-      p5.fill(conveyor.color);
+      p5.fill(conveyor.isActive ? '#ffcc00' : conveyor.color); // Yellow if active
       p5.stroke(0);
       p5.strokeWeight(2);
       p5.rect(conveyor.x, conveyor.y, conveyor.width, conveyor.height);
-      
       // Draw conveyor arrows
       p5.fill(0);
       p5.noStroke();
@@ -199,6 +197,14 @@ export class Level {
       p5.fill(this.door.color);
       p5.stroke(0);
       p5.strokeWeight(2);
+      p5.rect(this.door.x, this.door.y, this.door.width, this.door.height);
+      p5.pop();
+    } else {
+      // Door open: draw a green outline
+      p5.push();
+      p5.noFill();
+      p5.stroke('#00ff00');
+      p5.strokeWeight(4);
       p5.rect(this.door.x, this.door.y, this.door.width, this.door.height);
       p5.pop();
     }

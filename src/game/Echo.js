@@ -189,20 +189,17 @@ export class Echo {
 
   render(p5) {
     p5.push();
-    p5.fill(this.color);
+    p5.fill('#00ffcc'); // Cyan for echoes
     p5.stroke(0);
     p5.strokeWeight(2);
-    p5.drawingContext.globalAlpha = this.alpha;
-    
-    // Draw Echo with transparency
+    p5.drawingContext.globalAlpha = 0.2; // 20% transparency
     p5.rect(this.x, this.y, this.width, this.height);
-    
     // Draw a ghostly face
     p5.fill(0);
     p5.noStroke();
-    p5.ellipse(this.x + 8, this.y + 8);
-    p5.ellipse(this.x + 24, this.y + 8);
-    p5.rect(this.x + 12, this.y + 20);
+    p5.ellipse(this.x + 8, this.y + 10, 4, 4);
+    p5.ellipse(this.x + 24, this.y + 10, 4, 4);
+    p5.rect(this.x + 12, this.y + 22, 8, 2);
     p5.drawingContext.globalAlpha = 1;
     p5.pop();
   }
