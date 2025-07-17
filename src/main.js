@@ -5,7 +5,7 @@ let game;
 let canvas;
 
 function setup() {
-  // Create canvas
+  // Create canvas with proper size
   canvas = createCanvas(80);
   canvas.parent('app');
   
@@ -21,9 +21,8 @@ function draw() {
 
 function windowResized() {
   // Handle window resize if needed
-  resizeCanvas(800,600)
+  resizeCanvas(800,600
 
 // Clean up when page is unloaded
-window.addEventListener('beforeunload', () => {
-  if (game) game.destroy();
+window.addEventListener(beforeunload', () => [object Object]  if (game) game.destroy();
 });

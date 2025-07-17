@@ -18,7 +18,7 @@ export class Player {
     this.alpha = 1;
   }
 
-  update(inputState, platforms) {
+  update(inputState, platforms, deltaTime = 16.67) {
     // Handle horizontal movement
     if (inputState.run) {
       this.velocityX = inputState.run ? this.speed : 0;
@@ -43,9 +43,10 @@ export class Player {
     // Apply gravity
     this.velocityY += this.gravity;
 
-    // Update position
-    this.x += this.velocityX;
-    this.y += this.velocityY;
+    // Update position with delta time for consistent physics
+    const timeScale = deltaTime / 16.67; // Normalize to60 FPS
+    this.x += this.velocityX * timeScale;
+    this.y += this.velocityY * timeScale;
 
     // Check collision with platforms
     this.checkPlatformCollisions(platforms);

@@ -7,7 +7,7 @@ export class Echo {
     
     // Visual properties with temporal decay
     this.color = '#00ff00'; // Green base color
-    this.alpha = Math.max(0.2, 0.2 - (this.age / 100)); // Transparency based on age
+    this.alpha = Math.max(0.2, 1 - (this.age * 0.2)); // Transparency based on age
     this.inputInaccuracy = Math.min(2, this.age); // ±1-2 pixel inaccuracies for older Echoes
     
     // Physics properties (same as player)
@@ -32,7 +32,7 @@ export class Echo {
     };
   }
 
-  update(platforms) {
+  update(platforms, deltaTime = 16.67) {
     // Get actions for current frame
     const frameActions = this.getActionsForFrame(this.currentFrame);
     
@@ -40,13 +40,17 @@ export class Echo {
     this.applyActions(frameActions);
     
     // Update physics (same as player)
-    this.updatePhysics(platforms);
+    this.updatePhysics(platforms, deltaTime);
     
     this.currentFrame++;
   }
 
   getActionsForFrame(frame) {
     return this.actions.filter(action => action.frame === frame);
+  }
+
+  getCurrentActions() {
+    return this.currentInput;
   }
 
   applyActions(actions) {
@@ -82,18 +86,22 @@ export class Echo {
       }
     }
 
-    // Apply input inaccuracies for older Echoes
+    // Apply input inaccuracies for older Echoes (improved logic)
     if (this.inputInaccuracy > 0) {
-      if (Math.random() < 0.1) { // 10% chance of input error per frame
-        this.currentInput.run = !this.currentInput.run;
-      }
-      if (Math.random() < 0.5) { // 50% chance of jump error
-        this.currentInput.jump = !this.currentInput.jump;
+      const errorChance = this.age * 0.05; // Error chance based on age level
+      if (Math.random() < errorChance) {
+        // Randomly modify input based on age
+        if (this.currentInput.run && Math.random() < 0.3) {
+          this.currentInput.run = false;
+        }
+        if (this.currentInput.jump && Math.random() < 0.2) {
+          this.currentInput.jump = false;
+        }
       }
     }
   }
 
-  updatePhysics(platforms) {
+  updatePhysics(platforms, deltaTime) {
     // Handle horizontal movement
     if (this.currentInput.run) {
       this.velocityX = this.speed;
@@ -113,9 +121,10 @@ export class Echo {
     // Apply gravity
     this.velocityY += this.gravity;
 
-    // Update position
-    this.x += this.velocityX;
-    this.y += this.velocityY;
+    // Update position with delta time for consistent physics
+    const timeScale = deltaTime / 16.67; // Normalize to 60 FPS
+    this.x += this.velocityX * timeScale;
+    this.y += this.velocityY * timeScale;
 
     // Check collision with platforms
     this.checkPlatformCollisions(platforms);
