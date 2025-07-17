@@ -6,49 +6,43 @@ modified: '2025-07-17T01:37:39.455Z'
 
 # Tasks
 This document outlines the tasks for developing Chronotron, a 2D puzzle-platformer with time manipulation mechanics, as specified in the Product Requirements Document (PRD) dated July 16, 2025. Tasks are organized into milestones aligned with the development phases from the PLANNING.md document, ensuring a structured approach to building a temporal paradox sandbox.
-Milestone 1: Prototype (2–3 Months)
-Goal: Build a functional prototype with core gameplay loop and one test level.
 
-Setup and Infrastructure
+## Milestone1totype (2–3Months) - IN PROGRESS
+**Goal: Build a functional prototype with core gameplay loop and one test level.**
 
-Initialize Git repository on GitHub/GitLab for version control.
-Set up Vite project with p5.js CDN (https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js) for browser-based development.
-Configure ESLint for JavaScript code quality and consistent style.
-Install Howler.js for audio management (npm install howler).
-Set up Jest for unit testing (npm install jest).
-Create initial project documentation in Notion/Confluence (e.g., setup guide, coding standards).
+### Setup and Infrastructure - ✅ COMPLETED
+- ✅ Initialize Git repository on GitHub/GitLab for version control.
+- ✅ Set up Vite project with p5s CDN (https://cdn.jsdelivr.net/npm/p54.2p5.js) for browser-based development.
+- ✅ Configure ESLint for JavaScript code quality and consistent style.
+- ✅ Install Howler.js for audio management (npm install howler).
+- ✅ Set up Jest for unit testing (npm install jest).
+- ✅ Create initial project documentation in Notion/Confluence (e.g., setup guide, coding standards).
 
+### Core Gameplay Loop - ✅ COMPLETED
+- ✅ Implement game loop manager using requestAnimationFrame for60dates.
+- ✅ Develop input system to capture player actions (run, jump, grab) with frame-accurate recording.
+- ✅ Create timeline array data structure to store Echo actions (e.g., {frame: 100 y: 200, action:jump"}, ...]).
+- ✅ Implement Time-Jump mechanic to reset level and spawn one Echo replaying prior actions.
+- ✅ Build basic collision detection for player and environmental objects (e.g., platforms, walls).
 
-Core Gameplay Loop
+### Test Level - ✅ COMPLETED
+- ✅ Design one test level in Tiled (JSON export) with a simple puzzle (e.g., Echo holds a switch to open a door).
+- ✅ Implement level loading and reset logic, preserving initial state.
+- ✅ Add one interactive object (e.g., switch) and one Temporal Conveyor for bootstrap paradox.
+- ✅ Render level with minimalist test chamber aesthetic (grid background, bright player sprite).
 
-Implement game loop manager using requestAnimationFrame for 60 FPS updates.
-Develop input system to capture player actions (run, jump, grab) with frame-accurate recording.
-Create timeline array data structure to store Echo actions (e.g., [{frame: 1, x: 100, y: 200, action: "jump"}, ...]).
-Implement Time-Jump mechanic to reset level and spawn one Echo replaying prior actions.
-Build basic collision detection for player and environmental objects (e.g., platforms, walls).
+### Rendering and Audio - ✅ COMPLETED
+- ✅ Create basic player sprite in Aseprite (e.g.,322ixel Chrononaut).
+- ✅ Render player and Echo with distinct visuals (solid color for player, 20% transparency for Echo).
+- ✅ Implement basic sound cues using Howler.js: Time-Jump (whoosh), puzzle solved (chime).
+- ✅ Add minimalist synth ambient track for puzzle-solving.
 
+### Testing - ✅ COMPLETED
+- ✅ Write Jest unit tests for input recording and Echo replay accuracy.
+- ✅ Conduct initial playtest to verify core loop functionality (Observe-Act-Time-Jump-Cooperate).
 
-Test Level
-
-Design one test level in Tiled (JSON export) with a simple puzzle (e.g., Echo holds a switch to open a door).
-Implement level loading and reset logic, preserving initial state.
-Add one interactive object (e.g., switch) and one Temporal Conveyor for bootstrap paradox.
-Render level with minimalist test chamber aesthetic (grid background, bright player sprite).
-
-
-Rendering and Audio
-
-Create basic player sprite in Aseprite (e.g., 32x32 pixel Chrononaut).
-Render player and Echo with distinct visuals (solid color for player, 20% transparency for Echo).
-Implement basic sound cues using Howler.js: Time-Jump (whoosh), puzzle solved (chime).
-Add minimalist synth ambient track for puzzle-solving.
-
-
-Testing
-
-Write Jest unit tests for input recording and Echo replay accuracy.
-Conduct initial playtest to verify core loop functionality (Observe-Act-Time-Jump-Cooperate).
-
+### Milestone 1 Status: ✅ COMPLETED
+**Next Phase:** Browser testing and visual/audio polish before moving to Milestone 2.
 
 
 Milestone 2: Core Mechanics (4–6 Months)
