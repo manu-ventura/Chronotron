@@ -14,6 +14,8 @@ export class InputSystem {
   }
 
   handleKeyDown(event) {
+    // Input validation: only allow known keys
+    if (!event.code || typeof event.code !== 'string') return;
     this.keys[event.code] = true;
     
     if (this.isRecording) {
@@ -22,6 +24,8 @@ export class InputSystem {
   }
 
   handleKeyUp(event) {
+    // Input validation: only allow known keys
+    if (!event.code || typeof event.code !== 'string') return;
     this.keys[event.code] = false;
     
     if (this.isRecording) {
@@ -30,6 +34,10 @@ export class InputSystem {
   }
 
   recordAction(type, key, frame) {
+    // Limit actions array to prevent memory leaks (e.g., 10,000 actions max)
+    if (this.actions.length > 10000) {
+      this.actions.shift();
+    }
     this.actions.push({
       frame: frame,
       type: type,
@@ -46,7 +54,9 @@ export class InputSystem {
 
   stopRecording() {
     this.isRecording = false;
-    return [...this.actions]; // Return a copy of the actions
+    const recorded = [...this.actions]; // Return a copy of the actions
+    this.actions = []; // Clear actions after time-jump/stop
+    return recorded;
   }
 
   update(frameCount) {
