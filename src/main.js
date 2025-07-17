@@ -1,24 +1,29 @@
 import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import { Game } from './game/Game.js'
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+let game;
+let canvas;
 
-setupCounter(document.querySelector('#counter'))
+function setup() {
+  // Create canvas
+  canvas = createCanvas(80);
+  canvas.parent('app');
+  
+  // Initialize game
+  game = new Game();
+  game.start();
+}
+
+function draw() {
+  // The game loop is handled by the GameLoop class
+  // This function is called by p5.js but we dont need it for our custom game loop
+}
+
+function windowResized() {
+  // Handle window resize if needed
+  resizeCanvas(800,600)
+
+// Clean up when page is unloaded
+window.addEventListener('beforeunload', () => {
+  if (game) game.destroy();
+});
