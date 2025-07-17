@@ -1,12 +1,13 @@
 import './style.css'
 import { Game } from './game/Game.js'
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from './game/constants.js';
 
 let game;
 let canvas;
 
 function setup() {
   // Create canvas
-  canvas = createCanvas(800, 600);
+  canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
   canvas.parent('app');
   
   // Initialize game
@@ -15,13 +16,12 @@ function setup() {
 }
 
 function draw() {
-  // The game loop is handled by the GameLoop class
-  // This function is called by p5.js but we dont need it for our custom game loop
+  // Intentionally left empty. All updates and rendering are handled by the custom GameLoop.
 }
 
 function windowResized() {
   // Handle window resize if needed
-  resizeCanvas(800, 600);
+  resizeCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
 // Clean up when page is unloaded

@@ -1,3 +1,5 @@
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from './constants.js';
+
 export class Level {
   constructor() {
     this.platforms = [];
@@ -13,7 +15,7 @@ export class Level {
     // Create a simple test level with platforms and interactive objects
     this.platforms = [
       // Ground
-      { x: 0, y: 550, width: 800, height: 50, type: 'ground' },
+      { x: 0, y: 550, width: CANVAS_WIDTH, height: 50, type: 'ground' },
       // Platforms
       { x: 100, y: 450, width: 100, height: 20, type: 'platform' },
       { x: 300, y: 350, width: 100, height: 20, type: 'platform' },
@@ -219,13 +221,13 @@ export class Level {
     p5.strokeWeight(1);
     
     // Draw vertical lines
-    for (let x = 0; x <= 800; x += 50) {
-      p5.line(x, 0, x, 600);
+    for (let x = 0; x <= CANVAS_WIDTH; x += 50) {
+      p5.line(x, 0, x, CANVAS_HEIGHT);
     }
     
     // Draw horizontal lines
-    for (let y = 0; y <= 600; y += 50) {
-      p5.line(0, y, 800, y);
+    for (let y = 0; y <= CANVAS_HEIGHT; y += 50) {
+      p5.line(0, y, CANVAS_WIDTH, y);
     }
     p5.pop();
   }

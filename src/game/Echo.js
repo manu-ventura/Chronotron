@@ -1,3 +1,5 @@
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from './constants.js';
+
 export class Echo {
   constructor(actions, startFrame, age = 0) {
     this.actions = actions;
@@ -156,12 +158,12 @@ export class Echo {
       this.x = 0;
       this.velocityX =0;
     }
-    if (this.x + this.width >800) {
-      this.x = 800 - this.width;
+    if (this.x + this.width > CANVAS_WIDTH) {
+      this.x = CANVAS_WIDTH - this.width;
       this.velocityX =0;
     }
-    if (this.y + this.height >600) {
-      this.y =600 - this.height;
+    if (this.y + this.height > CANVAS_HEIGHT) {
+      this.y = CANVAS_HEIGHT - this.height;
       this.velocityY = 0;
       this.isOnGround = true;
     }

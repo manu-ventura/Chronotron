@@ -23,11 +23,12 @@ export class GameLoop {
   loop(currentTime = performance.now()) {
     if (!this.isRunning) return;
 
-    const deltaTime = currentTime - this.lastTime;
+    const deltaTimeMs = currentTime - this.lastTime;
+    const deltaTime = deltaTimeMs / 1000; // in seconds
 
-    if (deltaTime >= this.frameTime) {
+    if (deltaTimeMs >= this.frameTime) {
       this.frameCount++;
-      this.lastTime = currentTime - (deltaTime % this.frameTime);
+      this.lastTime = currentTime - (deltaTimeMs % this.frameTime);
 
       // Update game logic
       this.updateCallbacks.forEach(callback => callback(deltaTime, this.frameCount));

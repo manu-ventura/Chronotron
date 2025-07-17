@@ -1,3 +1,5 @@
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from './constants.js';
+
 export class Player {
   constructor(x, y) {
     this.x = x;
@@ -107,12 +109,12 @@ export class Player {
       this.x = 0;
       this.velocityX = 0;
     }
-    if (this.x + this.width > 800) { // Assuming 800 canvas width
-      this.x = 800 - this.width;
+    if (this.x + this.width > CANVAS_WIDTH) {
+      this.x = CANVAS_WIDTH - this.width;
       this.velocityX = 0;
     }
-    if (this.y + this.height > 600) { // Assuming 600 canvas height
-      this.y = 600 - this.height;
+    if (this.y + this.height > CANVAS_HEIGHT) {
+      this.y = CANVAS_HEIGHT - this.height;
       this.velocityY = 0;
       this.isOnGround = true;
     }
