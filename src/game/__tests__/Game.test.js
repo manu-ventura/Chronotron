@@ -13,7 +13,7 @@ describe('GameLoop', () => {
   test('should initialize with correct properties', () => {
     expect(gameLoop.isRunning).toBe(false);
     expect(gameLoop.fps).toBe(60);
-    expect(gameLoop.frameTime).toBe(10060);
+    expect(gameLoop.frameTime).toBe(1000/60);
   });
 
   test('should start and stop correctly', () => {
@@ -94,6 +94,7 @@ describe('Player', () => {
 
   test('should jump when on ground', () => {
     player.y = 150; // Place player above ground
+    player.isOnGround = true; // Set player on ground
     const inputState = { run: false, jump: true, grab: false, timeJump: false };
     
     player.update(inputState, platforms);
@@ -103,11 +104,14 @@ describe('Player', () => {
 
   test('should collide with platforms', () => {
     player.y = 150; 
+    player.velocityY = 5; // Apply downward velocity
     const inputState = { run: false, jump: false, grab: false, timeJump: false };
+    // Use a platform that the player can actually land on
+    const testPlatforms = [{ x: 0, y: 200, width: 100, height: 20 }];
     
     // Apply gravity to make player fall
     for (let i = 0; i < 10; i++) {
-      player.update(inputState, platforms);
+      player.update(inputState, testPlatforms);
     }
     
     // Player should be on the platform
@@ -178,6 +182,7 @@ describe('Level', () => {
     
     // Reset
     level.reset();
-    expect(door.isOpen).toBe(initialState);
+    const resetDoor = level.getDoor();
+    expect(resetDoor.isOpen).toBe(initialState);
   });
 });
