@@ -3,6 +3,7 @@ import { InputSystem } from './InputSystem.js';
 import { Player } from './Player.js';
 import { Echo } from './Echo.js';
 import { Level } from './Level.js';
+import { Howl } from 'howler';
 
 export class Game {
   constructor() {
@@ -17,9 +18,9 @@ export class Game {
     this.gameState = 'playing'; // playing, paused, gameOver
     this.currentTimeline = 0;
     this.sounds = {
-      timeJump: null,
-      puzzleSolved: null,
-      ambient: null
+      timeJump: new Howl({ src: ['public/time-jump.mp3'], volume: 0.5 }),
+      puzzleSolved: new Howl({ src: ['public/puzzle-solved.mp3'], volume: 0.5 }),
+      ambient: null // To be implemented
     };
     this.setupGameLoop();
   }
@@ -144,8 +145,11 @@ export class Game {
   }
 
   playSound(soundName) {
-    // Placeholder for Howler.js integration
-    console.log('Playing sound:', soundName);
+    if (this.sounds[soundName]) {
+      this.sounds[soundName].play();
+    } else {
+      console.log('Playing sound:', soundName);
+    }
   }
 
   render() {
